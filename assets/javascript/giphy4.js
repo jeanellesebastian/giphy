@@ -56,30 +56,54 @@ function renderButtons() {
         renderButtons();
       });
 
+	// call renderButtons function to display initial buttons
+	renderButtons();
+
 
 // FUNCTION - needed to request to GIPHY using AJAX
 
-function displayGiphy(){
-	var movie = $(this)("data-name");
-	var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + movie + "&api_key=7191e7d7b4ed4614839f005e863efdfa&limit=10";
+	// event listener for all button elements
+	function displayMovie (){
 
-	// create AJAX call for specific movie button being clicked
-	$.ajax({
-		url:queryURL,
-		method:"GET"})
-		.done(function(response){
+		// $("movie-buttons").on("click", function(){
 
-		});
-}
+		// this refers to the button that was clicked
+		var movie = $(this).attr("data-name");
 
-// FUNCTION - needed to crate an on click button event that will display GIPHYs
+		// constructing a URL to search GIPHY for movie
+		var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + movie + "&api_key=7191e7d7b4ed4614839f005e863efdfa&limit=10";
+
+		// create AJAX GET request
+		$.ajax({
+			url:queryURL,
+			method:"GET"}) // ajax closes here
+
+			// after the data is DONE getting called from the GIPHY API
+			.done(function(response){
+				// store the results in a results variable
+				var results = response.data;
 
 
+				for (var i = 0; i < results.length; i++) {
+					var gifDiv = $("<div class='gifDiv'>");
+					var rating = results[i].rating;
+					var p = $("<p>").text("Rating: " + rating);
+					var movieGif = $("<img>");
+					movieGif.attr("src", results[i].images.fixed_height.url);
+					gifDiv.append(p);
+					gifDiv.append(movieGif);
+					$("#GIFArea").prepend(gifDiv);
+				
+				} // close for loop
 
-// CALL THE FUNCTIONS 
+			}); // close done function
 
-	// call renderButtons function to display initial buttons
-	renderButtons();
+	} // close displayMovie function
+
+
+    $(document).on("click", ".movie", displayMovie);
+
+
 });
 
 
