@@ -10,7 +10,7 @@
 
 $(document).ready(function(){
 
-// create an array of movies
+// create an array of movies as strings / global variable
 var movies = [
 	"Toy Story", 
 	"Despicable  Me",
@@ -21,7 +21,7 @@ var movies = [
 	"Forrest Gump",
 	"Land Before Time"];
 
-// FUNCTION - needed to create buttons from array
+// FUNCTION - to create buttons from array
 
 function renderButtons() {
 	    // (this is necessary otherwise you will have repeat buttons)
@@ -60,7 +60,7 @@ function renderButtons() {
 	renderButtons();
 
 
-// FUNCTION - needed to request to GIPHY using AJAX
+// FUNCTION -  to request to GIPHY API using AJAX
 
 	// event listener for all button elements
 	function displayMovie (){
@@ -84,14 +84,23 @@ function renderButtons() {
 				var results = response.data;
 
 
+
 				for (var i = 0; i < results.length; i++) {
 					var gifDiv = $("<div class='gifDiv'>");
 					var rating = results[i].rating;
 					var p = $("<p>").text("Rating: " + rating);
-					var movieGif = $("<img>");
+					var movieGif = $("<img class='gifImg'>");
 					movieGif.attr("src", results[i].images.fixed_height.url);
+					movieGif.attr("data-animate", results[i].images.fixed_height.url);
+					movieGif.attr("data-state", "animate");
+
 					gifDiv.append(p);
 					gifDiv.append(movieGif);
+
+					// add still state attr
+					// add animate state attr
+					
+
 					$("#GIFArea").prepend(gifDiv);
 				
 				} // close for loop
@@ -101,8 +110,22 @@ function renderButtons() {
 	} // close displayMovie function
 
 
-    $(document).on("click", ".movie", displayMovie);
+$(document).on("click", ".movie", displayMovie);
 
+$(document).on("click", ".gifImg", function(){
+	var src = $(this).attr("src");
+	var state = $(this).attr("data-state");
+	var animate = $(this).attr("data-animate");
+
+	if ( state === "animate" ) {
+		$(this).attr("src", src.replace(".gif", "_s.gif"))
+		$(this).attr("data-state", "still")
+	} else {
+		$(this).attr('src', animate)
+		$(this).attr("data-state", "animate")
+	}
+
+})
 
 });
 
